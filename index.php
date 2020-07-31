@@ -11,7 +11,7 @@
     <title>Document</title>
 </head>
 <body>
-<form method="POST" action="<?=$_SERVER['REQUEST_URI']?>" enctype="multipart/form-data">
+<form method="POST" action="" enctype="multipart/form-data">
     <input name="title" type="text" placeholder="Заголовок"/>
     <input name="description" type="text" placeholder="Краткое описание"/>
     <input name="details" type="text" placeholder="Полный текст"/>
@@ -31,12 +31,8 @@ if (isset($_POST['title']) && isset($_POST['description']) && isset($_POST['deta
     $description = $_POST['description'];
     $details = $_POST['details'];
 
+    require_once 'optionsimagesave.php';
 
-    $file = $_FILES['picture']['tmp_name'];
-    $filename = mt_rand(0, 10000);
-    $name = $_FILES['picture']['name'].$filename;
-    $path = 'images/';
-    $routeToImage = $path.$name;
     if (!@copy($_FILES['picture']['tmp_name'], $routeToImage))
         echo 'Что-то пошло не так';
     else

@@ -11,6 +11,7 @@
 <body>
 <?php
 require_once 'connection.php';
+require_once 'optionsimagesave.php';
 
 $id = $_GET['id'];
 
@@ -25,15 +26,17 @@ $details = $_POST['details'];
 
 $file = $_FILES['picture']['tmp_name'];
 $filename = mt_rand(0, 10000);
-$name = $_FILES['picture']['name'].$filename;
+$name = $filename . $_FILES['picture']['name'];
 $path = 'images/';
-$routeToImage = $path.$name;
+$routeToImageUpdate = $path . $name;
 
-@copy($_FILES['picture']['tmp_name'], $routeToImage);
+@copy($file, $routeToImageUpdate);
 
-if (isset($title) && isset($description) && isset($details) && isset($file)){
-     mysqli_query($mysqli,"UPDATE posts SET title='$title', description = '$description', details = '$details', images='$routeToImage'  WHERE id='$id' ");
-     $post = $mysqli->query($select)->fetch_assoc();
+if (isset($title) && isset($description) && isset($details) && isset($file)) {
+    unlink($post["images"]);
+
+    mysqli_query($mysqli, "UPDATE posts SET title='$title', description = '$description', details = '$details', images='$routeToImageUpdate'  WHERE id='$id' ");
+    $post = $mysqli->query($select)->fetch_assoc();
 
      $_SESSION['message'] = "ИНФОРМАЦИЯ ОБНОВЛЕНА!";
     echo '<script>
@@ -45,18 +48,21 @@ if (isset($title) && isset($description) && isset($details) && isset($file)){
 
 ?>
 
-<form action="update.php?id=<?=$post['id']?>" method="post" enctype="multipart/form-data">
-    <div class="form-group" >
+<form action="update.php?id=<?= $post['id'] ?>" method="post" enctype="multipart/form-data">
+    <div class="form-group">
         <label for="exampleInputEmail1">title</label>
-        <input type="text" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" value="<?=$post['title'] ?>" name="title">
+        <input type="text" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp"
+               value="<?= $post['title'] ?>" name="title">
     </div>
     <div class="form-group">
         <label for="exampleInputPassword1">description</label>
-        <input type="text" class="form-control" id="exampleInputPassword1" value="<?=$post['description'] ?>" name="description">
+        <input type="text" class="form-control" id="exampleInputPassword1" value="<?= $post['description'] ?>"
+               name="description">
     </div>
     <div class="form-group">
         <label for="exampleInputPassword1">details</label>
-        <input type="text" class="form-control" id="exampleInputPassword1" value="<?=$post['details'] ?>" name="details">
+        <input type="text" class="form-control" id="exampleInputPassword1" value="<?= $post['details'] ?>"
+               name="details">
     </div>
     <div class="form-group">
         <label for="exampleInputPassword1">images</label><br>
